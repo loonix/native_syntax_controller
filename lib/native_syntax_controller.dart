@@ -38,3 +38,6 @@ export 'src/evaluation.dart';
 
 // Export the highlighting functionality
 export 'src/highlighting.dart';
+
+// Export the built-in functions
+export 'src/functions.dart';

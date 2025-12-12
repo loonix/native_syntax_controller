@@ -1,6 +1,7 @@
 ## 1.1.0
 
 * Added support for custom functions in formula evaluation via the `customFunctions` parameter in `evaluateFormula`.
+* Added direct access to built-in functions: `if_`, `sin_`, `cos_`, `pi_`, `average`, `sum`, `arrayAny`, `arrayAll`.
 
 ## 1.0.0
 

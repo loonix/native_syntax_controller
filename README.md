@@ -69,6 +69,29 @@ void main() {
 
   final result3 = evaluateFormula({'name': 'World'}, 'GREET(name)', customFunctions: customFunctions);
   print(result3); // Hello, World!
+### Direct Function Calls
+
+You can also use the built-in functions directly in your Dart code:
+
+```dart
+import 'package:native_syntax_controller/native_syntax_controller.dart';
+
+void main() {
+  // Conditional logic
+  final result1 = if_(true, 'Yes', 'No'); // 'Yes'
+
+  // Mathematical functions
+  final result2 = sin_(pi_ / 2); // 1.0
+  final result3 = cos_(0); // 1.0
+
+  // Array operations
+  final data = [{'status': 'pass'}, {'status': 'fail'}];
+  final result4 = arrayAny(data, 'status', 'fail'); // true
+  final result5 = arrayAll(data, 'status', 'pass'); // false
+
+  // Aggregation functions
+  final result6 = sum(1, 2, 3, 4, 5); // 15
+  final result7 = average(10, 20, 30); // 20
 }
 ```
 
@@ -332,9 +355,19 @@ evaluateFormula({}, 'SUM("not", "an", "array")'); // Expected array, got string
 final result = evaluateFormula({}, '5 / 0');     // Returns: double.infinity
 ```
 
-## API Reference
+### Built-in Functions
 
-### evaluateFormula(Map<String, dynamic> context, String formula, {Map<String, dynamic>? customFunctions})
+The package provides several built-in functions that can be used both in formulas and directly in Dart code:
+
+- `if_(condition, trueVal, falseVal)`: Conditional function
+- `sin_(x)`, `cos_(x)`: Trigonometric functions
+- `pi_`: Pi constant
+- `average(a, [b, c, d])`: Calculate average of values
+- `sum(a, [b, c, d, e])`: Calculate sum of values
+- `arrayAny(array, field, value)`: Check if any array item matches
+- `arrayAll(array, field, value)`: Check if all array items match
+
+### SyntaxHighlightingController
 
 Evaluates a formula expression with the given context variables and optional custom functions.
 

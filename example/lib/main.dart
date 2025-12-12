@@ -114,6 +114,30 @@ class _MainAppState extends State<MainApp> {
     }
   }
 
+  void _testDirectFunctions() {
+    setState(() {
+      _error = '';
+      _result = '';
+    });
+
+    try {
+      // Test direct function calls
+      final results = [
+        'if_(true, "Pass", "Fail"): ${if_(true, "Pass", "Fail")}',
+        'sum(1, 2, 3, 4, 5): ${sum(1, 2, 3, 4, 5)}',
+        'average(10, 20, 30): ${average(10, 20, 30)}',
+        'sin_(pi_/2): ${sin_(pi_ / 2)}',
+        'cos_(0): ${cos_(0)}',
+        'arrayAny([{"status": "pass"}, {"status": "fail"}], "status", "fail"): ${arrayAny([{"status": "pass"}, {"status": "fail"}], "status", "fail")}',
+        'arrayAll([{"status": "pass"}, {"status": "pass"}], "status", "pass"): ${arrayAll([{"status": "pass"}, {"status": "pass"}], "status", "pass")}',
+      ];
+
+      setState(() => _result = results.join('\n'));
+    } catch (e) {
+      setState(() => _error = 'Error: $e');
+    }
+  }
+
   void _loadExample(int index) {
     if (_formulaController == null) return;
 
@@ -175,6 +199,8 @@ class _MainAppState extends State<MainApp> {
 
               const SizedBox(height: 16),
               ElevatedButton(onPressed: _evaluate, child: const Text('Evaluate')),
+              const SizedBox(height: 8),
+              ElevatedButton(onPressed: _testDirectFunctions, child: const Text('Test Direct Functions'), style: ElevatedButton.styleFrom(backgroundColor: Colors.blue)),
 
               const SizedBox(height: 16),
               if (_error.isNotEmpty) Text(_error, style: const TextStyle(color: Colors.redAccent)),

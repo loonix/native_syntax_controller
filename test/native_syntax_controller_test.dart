@@ -31,6 +31,84 @@ void main() {
     expect(result, 'Pass');
   });
 
+  group('Built-in Functions', () {
+    test('if_ function', () {
+      expect(if_(true, 'yes', 'no'), 'yes');
+      expect(if_(false, 'yes', 'no'), 'no');
+      expect(if_(1 > 0, 42, 0), 42);
+      expect(if_(0 > 1, 42, 0), 0);
+    });
+
+    test('sin_ function', () {
+      expect(sin_(0), closeTo(0, 0.001));
+      expect(sin_(pi_ / 2), closeTo(1, 0.001));
+      expect(sin_(pi_), closeTo(0, 0.001));
+      expect(sin_('1.57'), closeTo(1, 0.001)); // String to num conversion
+    });
+
+    test('cos_ function', () {
+      expect(cos_(0), closeTo(1, 0.001));
+      expect(cos_(pi_ / 2), closeTo(0, 0.001));
+      expect(cos_(pi_), closeTo(-1, 0.001));
+      expect(cos_('0'), closeTo(1, 0.001)); // String to num conversion
+    });
+
+    test('pi_ constant', () {
+      expect(pi_, closeTo(3.14159, 0.00001));
+    });
+
+    test('average function', () {
+      expect(average(10), 10);
+      expect(average(10, 20), 15);
+      expect(average(10, 20, 30), 20);
+      expect(average(10, 20, 30, 40), 25);
+      expect(average('10', '20'), 15); // String conversion
+      expect(average(null, 10, null, 20), 15); // Null handling
+    });
+
+    test('sum function', () {
+      expect(sum(1), 1);
+      expect(sum(1, 2), 3);
+      expect(sum(1, 2, 3), 6);
+      expect(sum(1, 2, 3, 4), 10);
+      expect(sum(1, 2, 3, 4, 5), 15);
+      expect(sum('1', '2', '3'), 6); // String conversion
+      expect(sum(null, 1, null, 2, null), 3); // Null handling
+    });
+
+    test('arrayAny function', () {
+      final array = [
+        {'status': 'pass', 'id': 1},
+        {'status': 'fail', 'id': 2},
+        {'status': 'pass', 'id': 3},
+      ];
+
+      expect(arrayAny(array, 'status', 'fail'), true);
+      expect(arrayAny(array, 'status', 'pass'), true);
+      expect(arrayAny(array, 'status', 'unknown'), false);
+      expect(arrayAny(array, 'id', 2), true);
+      expect(arrayAny(array, 'id', 99), false);
+      expect(arrayAny(null, 'status', 'pass'), false);
+      expect(arrayAny([], 'status', 'pass'), false);
+      expect(arrayAny('not an array', 'status', 'pass'), false);
+    });
+
+    test('arrayAll function', () {
+      final array = [
+        {'status': 'pass', 'id': 1},
+        {'status': 'pass', 'id': 1},
+        {'status': 'pass', 'id': 1},
+      ];
+
+      expect(arrayAll(array, 'status', 'pass'), true);
+      expect(arrayAll(array, 'status', 'fail'), false);
+      expect(arrayAll(array, 'id', 1), true); // All have id=1
+      expect(arrayAll(null, 'status', 'pass'), false);
+      expect(arrayAll([], 'status', 'pass'), false);
+      expect(arrayAll('not an array', 'status', 'pass'), false);
+    });
+  });
+
   group('SyntaxHighlightingController', () {
     testWidgets('highlights functions', (WidgetTester tester) async {
       final controller = SyntaxHighlightingController();
