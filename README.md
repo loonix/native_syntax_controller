@@ -45,6 +45,30 @@ void main() {
   final data = {'user': {'age': 25, 'score': 85}};
   final result3 = evaluateFormula(data, 'user.age > 18 && user.score >= 80');
   print(result3); // true
+### Custom Functions
+
+You can define your own functions for use in formulas:
+
+```dart
+import 'package:native_syntax_controller/native_syntax_controller.dart';
+
+void main() {
+  // Define custom functions
+  final customFunctions = {
+    'DOUBLE': (dynamic x) => _toNum(x) * 2,
+    'SQUARE': (dynamic x) => _toNum(x) * _toNum(x),
+    'GREET': (dynamic name) => 'Hello, $name!',
+  };
+
+  // Use custom functions in formulas
+  final result1 = evaluateFormula({}, 'DOUBLE(5)', customFunctions: customFunctions);
+  print(result1); // 10
+
+  final result2 = evaluateFormula({'base': 3}, 'SQUARE(base) + DOUBLE(base)', customFunctions: customFunctions);
+  print(result2); // 15 (9 + 6)
+
+  final result3 = evaluateFormula({'name': 'World'}, 'GREET(name)', customFunctions: customFunctions);
+  print(result3); // Hello, World!
 }
 ```
 
@@ -310,12 +334,13 @@ final result = evaluateFormula({}, '5 / 0');     // Returns: double.infinity
 
 ## API Reference
 
-### evaluateFormula(Map<String, dynamic> context, String formula)
+### evaluateFormula(Map<String, dynamic> context, String formula, {Map<String, dynamic>? customFunctions})
 
-Evaluates a formula expression with the given context variables.
+Evaluates a formula expression with the given context variables and optional custom functions.
 
 - `context`: Map of variables available in the formula
 - `formula`: String expression to evaluate
+- `customFunctions`: Optional map of custom functions to make available in the formula
 - Returns: The result of the evaluation
 
 ### SyntaxHighlightingController

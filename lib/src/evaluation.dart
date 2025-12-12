@@ -48,7 +48,7 @@ num _toNum(dynamic v) {
   return num.tryParse(v.toString()) ?? 0;
 }
 
-dynamic evaluateFormula(Map<String, dynamic> json, String formula) {
+dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, dynamic>? customFunctions}) {
   final List<Map<String, dynamic>> allErrors = [];
 
   try {
@@ -167,7 +167,7 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula) {
       }
 
       // Remove known functions and keywords
-      final knownFunctions = {'IF', 'SIN', 'COS', 'PI', 'AVERAGE', 'SUM', 'ARRAY_ANY', 'ARRAY_ALL', 'true', 'false', 'null'};
+      final knownFunctions = {'IF', 'SIN', 'COS', 'PI', 'AVERAGE', 'SUM', 'ARRAY_ANY', 'ARRAY_ALL', 'true', 'false', 'null', ...?customFunctions?.keys};
 
       final potentialUndefined = allIdentifiers.where((id) => !knownFunctions.contains(id)).toList();
 
@@ -213,6 +213,11 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula) {
         'COS': (dynamic x) => cos(_toNum(x)),
         'PI': pi,
       });
+
+      // Add custom functions if provided
+      if (customFunctions != null) {
+        context.addAll(customFunctions);
+      }
 
       try {
         const evaluator = ExpressionEvaluator();
