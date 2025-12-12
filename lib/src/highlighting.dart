@@ -64,14 +64,15 @@ class SyntaxHighlightingController extends TextEditingController {
 
       // Aplica cor baseada no grupo
       TextStyle? matchStyle;
-      if (match.group(1) != null)
+      if (match.group(1) != null) {
         matchStyle = styles['string'];
-      else if (match.group(2) != null)
+      } else if (match.group(2) != null) {
         matchStyle = styles['function'];
-      else if (match.group(3) != null)
+      } else if (match.group(3) != null) {
         matchStyle = styles['number'];
-      else if (match.group(4) != null)
+      } else if (match.group(4) != null) {
         matchStyle = styles['operator'];
+      }
 
       children.add(TextSpan(text: match.group(0), style: style?.merge(matchStyle) ?? matchStyle));
 

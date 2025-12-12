@@ -152,7 +152,6 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula) {
       for (final match in allMatches) {
         final identifier = match.group(1)!;
         final start = match.start;
-        final end = match.end;
 
         // Check if this identifier is inside single or double quotes
         bool insideQuotes = false;

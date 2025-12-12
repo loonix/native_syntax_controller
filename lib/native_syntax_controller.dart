@@ -33,8 +33,6 @@
 ///   },
 /// );
 /// ```
-library native_syntax_controller;
-
 // Export the evaluation functionality
 export 'src/evaluation.dart';
 
