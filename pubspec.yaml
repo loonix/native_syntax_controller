@@ -1,0 +1,24 @@
+name: native_syntax_controller
+description: "A high-performance syntax highlighting controller using Flutter's native text rendering (TextSpan). No overlays, no sync issues, just a pure TextEditingController extension."
+version: 1.0.0
+repository: https://github.com/loonix/native_syntax_controller.git
+authors:
+  - Daniel Carneiro <
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  expressions: ^0.2.5+3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
