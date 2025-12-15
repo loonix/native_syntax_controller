@@ -45,5 +45,6 @@ bool arrayAny(dynamic array, String field, dynamic value) {
 /// Array all function: checks if all items in the array match the condition
 bool arrayAll(dynamic array, String field, dynamic value) {
   if (array is! List) return false;
+  if (array.isEmpty) return false;
   return array.every((item) => item is Map && item[field] == value);
 }
