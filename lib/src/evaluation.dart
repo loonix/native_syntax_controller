@@ -209,14 +209,28 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
       });
 
       context.addAll({
-        'AVERAGE': (dynamic a, dynamic b, [dynamic c, dynamic d]) {
-          final values = [a, b, if (c != null) c, if (d != null) d].map(_toNum).toList();
+        'AVERAGE': (dynamic a, [dynamic b, dynamic c, dynamic d]) {
+          // Handle case where a is a list (AVERAGE(items))
+          if (a is List && b == null) {
+            final values = a.map(_toNum).toList();
+            if (values.isEmpty) return 0;
+            final sum = values.fold<num>(0, (acc, v) => acc + v);
+            return sum / values.length;
+          }
+          // Handle case where arguments are individual values (AVERAGE(a, b, c, ...))
+          final values = [a, if (b != null) b, if (c != null) c, if (d != null) d].map(_toNum).toList();
           if (values.isEmpty) return 0;
           final sum = values.fold<num>(0, (acc, v) => acc + v);
           return sum / values.length;
         },
-        'SUM': (dynamic a, dynamic b, [dynamic c, dynamic d, dynamic e]) {
-          final values = [a, b, if (c != null) c, if (d != null) d, if (e != null) e].map(_toNum).toList();
+        'SUM': (dynamic a, [dynamic b, dynamic c, dynamic d, dynamic e]) {
+          // Handle case where a is a list (SUM(items))
+          if (a is List && b == null) {
+            final values = a.map(_toNum).toList();
+            return values.fold<num>(0, (acc, v) => acc + v);
+          }
+          // Handle case where arguments are individual values (SUM(a, b, c, ...))
+          final values = [a, if (b != null) b, if (c != null) c, if (d != null) d, if (e != null) e].map(_toNum).toList();
           return values.fold<num>(0, (acc, v) => acc + v);
         },
         'ARRAY_ANY': (dynamic array, String field, dynamic value) {
@@ -242,12 +256,26 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
         },
         'ABS': (dynamic x) => _toNum(x).abs(),
         'SQRT': (dynamic x) => sqrt(_toNum(x)),
-        'MIN': (dynamic a, dynamic b, [dynamic c, dynamic d]) {
-          final values = [a, b, if (c != null) c, if (d != null) d].map(_toNum).toList();
+        'MIN': (dynamic a, [dynamic b, dynamic c, dynamic d]) {
+          // Handle case where a is a list (MIN(items))
+          if (a is List && b == null) {
+            final values = a.map(_toNum).toList();
+            if (values.isEmpty) return 0;
+            return values.reduce((curr, next) => curr < next ? curr : next);
+          }
+          // Handle case where arguments are individual values (MIN(a, b, c, ...))
+          final values = [a, if (b != null) b, if (c != null) c, if (d != null) d].map(_toNum).toList();
           if (values.isEmpty) return 0;
           return values.reduce((curr, next) => curr < next ? curr : next);
         },
-        'MAX': (dynamic a, dynamic b, [dynamic c, dynamic d]) {
+        'MAX': (dynamic a, [dynamic b, dynamic c, dynamic d]) {
+          // Handle case where a is a list (MAX(items))
+          if (a is List && b == null) {
+            final values = a.map(_toNum).toList();
+            if (values.isEmpty) return 0;
+            return values.reduce((curr, next) => curr > next ? curr : next);
+          }
+          // Handle case where arguments are individual values (MAX(a, b, c, ...))
           final values = [a, b, if (c != null) c, if (d != null) d].map(_toNum).toList();
           if (values.isEmpty) return 0;
           return values.reduce((curr, next) => curr > next ? curr : next);

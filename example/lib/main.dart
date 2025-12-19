@@ -208,12 +208,7 @@ class _MainAppState extends State<MainApp> {
         cardTheme: CardThemeData(elevation: 4, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
       ),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('🎯 Native Syntax Controller'),
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-          elevation: 0,
-        ),
+        appBar: AppBar(title: const Text('Native Syntax Controller'), backgroundColor: Colors.black87, foregroundColor: Colors.white, elevation: 0),
         body: LayoutBuilder(
           builder: (context, constraints) {
             final isLargeScreen = constraints.maxWidth > 800;
@@ -302,147 +297,159 @@ class _MainAppState extends State<MainApp> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         // Main content area
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Formula Input Section
-                            Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.edit, color: Colors.blue),
-                                        const SizedBox(width: 8),
-                                        const Text('Formula Editor', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                                        const Spacer(),
-                                        const Text('Custom Colors'),
-                                        Switch(value: _useCustomColors, onChanged: _toggleCustomColors, activeThumbColor: Colors.orange),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 12),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
-                                      ),
-                                      child: TextField(
-                                        controller: _formulaController,
-                                        maxLines: 3,
-                                        style: const TextStyle(fontFamily: 'Courier', fontSize: 16),
-                                        decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          contentPadding: const EdgeInsets.all(16),
-                                          hintText: 'Enter your formula...',
-                                          hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            // JSON Input Section
-                            Card(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.data_object, color: Colors.green),
-                                        const SizedBox(width: 8),
-                                        const Text('Context Data (JSON)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 12),
-                                    TextField(
-                                      controller: _jsonController,
-                                      maxLines: 2,
-                                      style: const TextStyle(fontFamily: 'Courier'),
-                                      decoration: InputDecoration(
-                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                                        hintText: '{"variable": "value"}',
-                                        contentPadding: const EdgeInsets.all(12),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            // Action Buttons
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ElevatedButton.icon(
-                                    onPressed: _evaluate,
-                                    icon: const Icon(Icons.play_arrow),
-                                    label: const Text('Evaluate'),
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(vertical: 12),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: OutlinedButton.icon(
-                                    onPressed: _testDirectFunctions,
-                                    icon: const Icon(Icons.science),
-                                    label: const Text('Test Functions'),
-                                    style: OutlinedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(vertical: 12),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            // Result Display
-                            if (_error.isNotEmpty || _result.isNotEmpty)
-                              Card(
-                                color: _error.isNotEmpty ? Theme.of(context).colorScheme.errorContainer : Theme.of(context).colorScheme.primaryContainer,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  // Formula Input Section
+                                  Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Icon(
-                                            _error.isNotEmpty ? Icons.error : Icons.check_circle,
-                                            color: _error.isNotEmpty ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.primary,
+                                          Row(
+                                            children: [
+                                              const Icon(Icons.edit, color: Colors.blue),
+                                              const SizedBox(width: 8),
+                                              const Text('Formula Editor', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                              const Spacer(),
+                                              const Text('Custom Colors'),
+                                              Switch(value: _useCustomColors, onChanged: _toggleCustomColors, activeThumbColor: Colors.orange),
+                                            ],
                                           ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            _error.isNotEmpty ? 'Error' : 'Result',
-                                            style: TextStyle(fontWeight: FontWeight.bold, color: _error.isNotEmpty ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.primary),
+                                          const SizedBox(height: 12),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                              borderRadius: BorderRadius.circular(8),
+                                              border: Border.all(color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3)),
+                                            ),
+                                            child: TextField(
+                                              controller: _formulaController,
+                                              maxLines: 3,
+                                              style: const TextStyle(fontFamily: 'Courier', fontSize: 16),
+                                              decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                contentPadding: const EdgeInsets.all(16),
+                                                hintText: 'Enter your formula...',
+                                                hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        _error.isNotEmpty ? _error : _result,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontFamily: 'Courier',
-                                          color: _error.isNotEmpty ? Theme.of(context).colorScheme.onErrorContainer : Theme.of(context).colorScheme.onPrimaryContainer,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 16),
+
+                                  // JSON Input Section
+                                  Card(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Icon(Icons.data_object, color: Colors.green),
+                                              const SizedBox(width: 8),
+                                              const Text('Context Data (JSON)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 12),
+                                          TextField(
+                                            controller: _jsonController,
+                                            maxLines: 2,
+                                            style: const TextStyle(fontFamily: 'Courier'),
+                                            decoration: InputDecoration(
+                                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                                              hintText: '{"variable": "value"}',
+                                              contentPadding: const EdgeInsets.all(12),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 16),
+
+                                  // Action Buttons
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton.icon(
+                                          onPressed: _evaluate,
+                                          icon: const Icon(Icons.play_arrow),
+                                          label: const Text('Evaluate'),
+                                          style: ElevatedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(vertical: 12),
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: OutlinedButton.icon(
+                                          onPressed: _testDirectFunctions,
+                                          icon: const Icon(Icons.science),
+                                          label: const Text('Test Functions'),
+                                          style: OutlinedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(vertical: 12),
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                                          ),
                                         ),
                                       ),
                                     ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(width: 16),
+
+                            // Result Display
+                            if (_error.isNotEmpty || _result.isNotEmpty)
+                              Expanded(
+                                flex: 1,
+                                child: Card(
+                                  color: _error.isNotEmpty ? Theme.of(context).colorScheme.errorContainer : Theme.of(context).colorScheme.primaryContainer,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              _error.isNotEmpty ? Icons.error : Icons.check_circle,
+                                              color: _error.isNotEmpty ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.primary,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              _error.isNotEmpty ? 'Error' : 'Result',
+                                              style: TextStyle(fontWeight: FontWeight.bold, color: _error.isNotEmpty ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.primary),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 8),
+                                        SingleChildScrollView(
+                                          child: Text(
+                                            _error.isNotEmpty ? _error : _result,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontFamily: 'Courier',
+                                              color: _error.isNotEmpty ? Theme.of(context).colorScheme.onErrorContainer : Theme.of(context).colorScheme.onPrimaryContainer,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
