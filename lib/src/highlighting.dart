@@ -52,7 +52,7 @@ class SyntaxHighlightingController extends TextEditingController {
     // Grupo 2: Funções
     // Grupo 3: Números
     // Grupo 4: Operadores
-    final RegExp syntaxRegex = RegExp(r"('[^']*'|" + '"[^"]*")|' + r'(\b[A-Z_]+\b(?=\())|' + r'(\b\d+(?:\.\d+)?\b)|' + r'([+\-*/=<>!&|]{1,2})', multiLine: true);
+    final RegExp syntaxRegex = RegExp(r'''('[^']*'|"[^"]*")|(\b[A-Z_]+\b(?=\())|(\b\d+(?:\.\d+)?\b)|([+\-*/=<>!&|]{1,2})''', multiLine: true);
 
     int currentIndex = 0;
 
