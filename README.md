@@ -12,7 +12,7 @@ A high-performance syntax highlighting controller using Flutter's native text re
 
 - **Formula Evaluation**: Evaluate mathematical and logical expressions using the expressions package
 - **Enhanced Map Support**: Access Map properties using both `.property` and `['property']` syntax
-- **Custom Functions**: Support for SUM, AVERAGE, IF, ARRAY_ANY, ARRAY_ALL, and more
+- **Custom Functions**: Support for SUM, AVERAGE, IF, ARRAY_ANY, ARRAY_ALL, CONTAINS, LENGTH, ABS, SQRT, MIN, MAX, and more
 - **Syntax Highlighting**: Automatic highlighting of functions, operators, numbers, and strings
 - **Customizable Colors**: Change highlighting colors to match your app's theme
 
@@ -83,15 +83,21 @@ void main() {
   // Mathematical functions
   final result2 = sin_(pi_ / 2); // 1.0
   final result3 = cos_(0); // 1.0
+  final result4 = abs_(-5); // 5.0
+  final result5 = sqrt_(9); // 3.0
 
-  // Array operations
+  // String and array operations
+  final result6 = contains_('hello world', 'world'); // true
+  final result7 = length('hello'); // 5
   final data = [{'status': 'pass'}, {'status': 'fail'}];
-  final result4 = arrayAny(data, 'status', 'fail'); // true
-  final result5 = arrayAll(data, 'status', 'pass'); // false
+  final result8 = arrayAny(data, 'status', 'fail'); // true
+  final result9 = arrayAll(data, 'status', 'pass'); // false
 
   // Aggregation functions
-  final result6 = sum(1, 2, 3, 4, 5); // 15
-  final result7 = average(10, 20, 30); // 20
+  final result10 = sum(1, 2, 3, 4, 5); // 15
+  final result11 = average(10, 20, 30); // 20
+  final result12 = min_(5, 3, 8); // 3
+  final result13 = max_(5, 3, 8); // 8
 }
 ```
 
@@ -156,7 +162,7 @@ class _CustomFormulaEditorState extends State<CustomFormulaEditor> {
 
 The syntax highlighter recognizes and colors the following elements:
 
-- **Functions**: `SUM`, `AVERAGE`, `IF`, `ARRAY_ANY`, `ARRAY_ALL`, etc.
+- **Functions**: `SUM`, `AVERAGE`, `IF`, `ARRAY_ANY`, `ARRAY_ALL`, `CONTAINS`, `LENGTH`, `ABS`, `SQRT`, `MIN`, `MAX`, etc.
 - **Operators**: `+`, `-`, `*`, `/`, `=`, `>`, `<`, `!`, `&`, `|`, etc.
 - **Numbers**: `42`, `3.14`, `1.5e10`
 - **Strings**: `'hello'`, `"world"`
@@ -167,6 +173,18 @@ The syntax highlighter recognizes and colors the following elements:
 // Basic math
 evaluateFormula({}, '2 + 3 * 4'); // 14
 
+// String operations
+evaluateFormula({'text': 'hello world'}, "CONTAINS(text, 'world')"); // true
+evaluateFormula({'text': 'hello'}, "LENGTH(text)"); // 5
+evaluateFormula({'message': 'Error: connection failed'}, "IF(CONTAINS(message, 'Error'), 'Alert', 'OK')"); // 'Alert'
+
+// Math functions
+evaluateFormula({'x': -5}, "ABS(x)"); // 5
+evaluateFormula({'x': 9}, "SQRT(x)"); // 3
+evaluateFormula({'a': 5, 'b': 3}, "MIN(a, b)"); // 3
+evaluateFormula({'a': 5, 'b': 3}, "MAX(a, b)"); // 5
+evaluateFormula({'values': [10, 5, 20]}, "MIN(values)"); // 5
+
 // Conditional logic
 evaluateFormula({'score': 85}, 'IF(score > 80, "Pass", "Fail")'); // "Pass"
 
@@ -174,6 +192,19 @@ evaluateFormula({'score': 85}, 'IF(score > 80, "Pass", "Fail")'); // "Pass"
 evaluateFormula({
   'items': [{'price': 10}, {'price': 20}, {'price': 30}]
 }, 'SUM(items, "price")'); // 60
+
+// Complex conditions with new functions
+evaluateFormula({
+  'user': {'name': 'John Doe', 'age': 25},
+  'scores': [85, 92, 78]
+}, 'LENGTH(user.name) > 0 && MAX(scores) >= 90'); // true
+
+// Business logic example
+evaluateFormula({
+  'product': {'name': 'Premium Widget', 'price': 99.99},
+  'discount': 15,
+  'tax_rate': 0.08
+}, 'IF(CONTAINS(product.name, "Premium"), product.price * (1 - discount/100) * (1 + tax_rate), product.price * (1 + tax_rate))'); // 91.19
 
 // Complex conditions
 evaluateFormula({
@@ -361,9 +392,13 @@ The package provides several built-in functions that can be used both in formula
 
 - `if_(condition, trueVal, falseVal)`: Conditional function
 - `sin_(x)`, `cos_(x)`: Trigonometric functions
+- `abs_(x)`, `sqrt_(x)`: Mathematical functions
 - `pi_`: Pi constant
+- `min_(a, [b, c, d])`, `max_(a, [b, c, d])`: Min/max functions
 - `average(a, [b, c, d])`: Calculate average of values
 - `sum(a, [b, c, d, e])`: Calculate sum of values
+- `contains_(str, substr)`: Check if string contains substring
+- `length(value)`: Get length of string or array
 - `arrayAny(array, field, value)`: Check if any array item matches
 - `arrayAll(array, field, value)`: Check if all array items match
 

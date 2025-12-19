@@ -107,6 +107,57 @@ void main() {
       expect(arrayAll([], 'status', 'pass'), false);
       expect(arrayAll('not an array', 'status', 'pass'), false);
     });
+
+    test('contains function', () {
+      expect(evaluateFormula({'text': 'hello world'}, "CONTAINS(text, 'world')"), true);
+      expect(evaluateFormula({'text': 'hello world'}, "CONTAINS(text, 'foo')"), false);
+      expect(evaluateFormula({'text': 'hello'}, "CONTAINS(text, 'hello')"), true);
+      expect(evaluateFormula({'text': 'hello'}, "CONTAINS(text, '')"), true); // Empty string
+      expect(evaluateFormula({'text': ''}, "CONTAINS(text, 'a')"), false);
+      expect(evaluateFormula({'text': 'hello'}, "CONTAINS(text, 123)"), false); // Non-string substr
+      expect(evaluateFormula({'text': 123}, "CONTAINS(text, '1')"), false); // Non-string text
+    });
+
+    test('length function', () {
+      expect(evaluateFormula({'text': 'hello'}, "LENGTH(text)"), 5);
+      expect(evaluateFormula({'text': ''}, "LENGTH(text)"), 0);
+      expect(
+        evaluateFormula({
+          'list': [1, 2, 3],
+        }, "LENGTH(list)"),
+        3,
+      );
+      expect(evaluateFormula({'list': []}, "LENGTH(list)"), 0);
+      expect(evaluateFormula({'num': 123}, "LENGTH(num)"), 0); // Non-string/list
+    });
+
+    test('abs function', () {
+      expect(evaluateFormula({'x': -5}, "ABS(x)"), 5);
+      expect(evaluateFormula({'x': 5}, "ABS(x)"), 5);
+      expect(evaluateFormula({'x': -3.14}, "ABS(x)"), 3.14);
+      expect(evaluateFormula({'x': ' -10 '}, "ABS(x)"), 10); // String conversion
+    });
+
+    test('sqrt function', () {
+      expect(evaluateFormula({'x': 9}, "SQRT(x)"), 3);
+      expect(evaluateFormula({'x': 4}, "SQRT(x)"), 2);
+      expect(evaluateFormula({'x': 0}, "SQRT(x)"), 0);
+      expect(evaluateFormula({'x': '16'}, "SQRT(x)"), 4); // String conversion
+    });
+
+    test('min function', () {
+      expect(evaluateFormula({'a': 5, 'b': 3}, "MIN(a, b)"), 3);
+      expect(evaluateFormula({'a': 5, 'b': 3, 'c': 7}, "MIN(a, b, c)"), 3);
+      expect(evaluateFormula({'a': -5, 'b': 3}, "MIN(a, b)"), -5);
+      expect(evaluateFormula({'a': '10', 'b': '5'}, "MIN(a, b)"), 5); // String conversion
+    });
+
+    test('max function', () {
+      expect(evaluateFormula({'a': 5, 'b': 3}, "MAX(a, b)"), 5);
+      expect(evaluateFormula({'a': 5, 'b': 3, 'c': 7}, "MAX(a, b, c)"), 7);
+      expect(evaluateFormula({'a': -5, 'b': 3}, "MAX(a, b)"), 3);
+      expect(evaluateFormula({'a': '10', 'b': '5'}, "MAX(a, b)"), 10); // String conversion
+    });
   });
 
   group('SyntaxHighlightingController', () {

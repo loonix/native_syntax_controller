@@ -48,3 +48,36 @@ bool arrayAll(dynamic array, String field, dynamic value) {
   if (array.isEmpty) return false;
   return array.every((item) => item is Map && item[field] == value);
 }
+
+/// Contains function: checks if the first string contains the second string
+bool contains_(dynamic str, dynamic substr) {
+  if (str is! String || substr is! String) return false;
+  return str.contains(substr);
+}
+
+/// Length function: returns the length of a string or list
+int length(dynamic value) {
+  if (value is String) return value.length;
+  if (value is List) return value.length;
+  return 0;
+}
+
+/// Absolute value function
+num abs_(dynamic x) => _toNum(x).abs();
+
+/// Square root function
+num sqrt_(dynamic x) => sqrt(_toNum(x));
+
+/// Minimum function: returns the minimum of provided values
+num min_(dynamic a, [dynamic b, dynamic c, dynamic d]) {
+  final values = [a, b, c, d].where((v) => v != null).map(_toNum).toList();
+  if (values.isEmpty) return 0;
+  return values.reduce((curr, next) => curr < next ? curr : next);
+}
+
+/// Maximum function: returns the maximum of provided values
+num max_(dynamic a, [dynamic b, dynamic c, dynamic d]) {
+  final values = [a, b, c, d].where((v) => v != null).map(_toNum).toList();
+  if (values.isEmpty) return 0;
+  return values.reduce((curr, next) => curr > next ? curr : next);
+}

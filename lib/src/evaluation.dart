@@ -167,7 +167,26 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
       }
 
       // Remove known functions and keywords
-      final knownFunctions = {'IF', 'SIN', 'COS', 'PI', 'AVERAGE', 'SUM', 'ARRAY_ANY', 'ARRAY_ALL', 'true', 'false', 'null', ...?customFunctions?.keys};
+      final knownFunctions = {
+        'IF',
+        'SIN',
+        'COS',
+        'PI',
+        'AVERAGE',
+        'SUM',
+        'ARRAY_ANY',
+        'ARRAY_ALL',
+        'CONTAINS',
+        'LENGTH',
+        'ABS',
+        'SQRT',
+        'MIN',
+        'MAX',
+        'true',
+        'false',
+        'null',
+        ...?customFunctions?.keys,
+      };
 
       final potentialUndefined = allIdentifiers.where((id) => !knownFunctions.contains(id)).toList();
 
@@ -212,6 +231,27 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
         'SIN': (dynamic x) => sin(_toNum(x)),
         'COS': (dynamic x) => cos(_toNum(x)),
         'PI': pi,
+        'CONTAINS': (dynamic str, dynamic substr) {
+          if (str is! String || substr is! String) return false;
+          return str.contains(substr);
+        },
+        'LENGTH': (dynamic value) {
+          if (value is String) return value.length;
+          if (value is List) return value.length;
+          return 0;
+        },
+        'ABS': (dynamic x) => _toNum(x).abs(),
+        'SQRT': (dynamic x) => sqrt(_toNum(x)),
+        'MIN': (dynamic a, dynamic b, [dynamic c, dynamic d]) {
+          final values = [a, b, if (c != null) c, if (d != null) d].map(_toNum).toList();
+          if (values.isEmpty) return 0;
+          return values.reduce((curr, next) => curr < next ? curr : next);
+        },
+        'MAX': (dynamic a, dynamic b, [dynamic c, dynamic d]) {
+          final values = [a, b, if (c != null) c, if (d != null) d].map(_toNum).toList();
+          if (values.isEmpty) return 0;
+          return values.reduce((curr, next) => curr > next ? curr : next);
+        },
       });
 
       // Add custom functions if provided
