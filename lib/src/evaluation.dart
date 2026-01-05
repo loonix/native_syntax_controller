@@ -48,6 +48,19 @@ num _toNum(dynamic v) {
   return num.tryParse(v.toString()) ?? 0;
 }
 
+DateTime? _parseDate(dynamic date) {
+  if (date == null) return null;
+  if (date is DateTime) return date;
+  if (date is String) {
+    try {
+      return DateTime.parse(date);
+    } catch (_) {
+      return null;
+    }
+  }
+  return null;
+}
+
 dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, dynamic>? customFunctions}) {
   final List<Map<String, dynamic>> allErrors = [];
 
@@ -178,10 +191,20 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
         'ARRAY_ALL',
         'CONTAINS',
         'LENGTH',
+        'LEN',
         'ABS',
         'SQRT',
         'MIN',
         'MAX',
+        'UPPER',
+        'LOWER',
+        'TRIM',
+        'IN',
+        'NOW',
+        'DATE_DIFF',
+        'DATE_ADD',
+        'IS_EMPTY',
+        'COALESCE',
         'true',
         'false',
         'null',
@@ -254,6 +277,69 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
           if (value is List) return value.length;
           return 0;
         },
+        'LEN': (dynamic value) {
+          if (value is String) return value.length;
+          if (value is List) return value.length;
+          return 0;
+        },
+        'UPPER': (dynamic text) => text?.toString().toUpperCase() ?? '',
+        'LOWER': (dynamic text) => text?.toString().toLowerCase() ?? '',
+        'TRIM': (dynamic text) => text?.toString().trim() ?? '',
+        'IN': (dynamic value, dynamic array) {
+          if (array is! List) return false;
+          return array.contains(value);
+        },
+        'NOW': () => DateTime.now(),
+        'DATE_DIFF': (dynamic date1, dynamic date2, dynamic unit) {
+          final d1 = _parseDate(date1);
+          final d2 = _parseDate(date2);
+
+          if (d1 == null || d2 == null) return 0;
+
+          final difference = d1.difference(d2);
+          final normalizedUnit = unit?.toString().toLowerCase() ?? 'days';
+
+          switch (normalizedUnit) {
+            case 'days':
+              return difference.inDays;
+            case 'hours':
+              return difference.inHours;
+            case 'minutes':
+              return difference.inMinutes;
+            case 'seconds':
+              return difference.inSeconds;
+            default:
+              return difference.inDays;
+          }
+        },
+        'DATE_ADD': (dynamic date, dynamic amount, dynamic unit) {
+          final parsedDate = _parseDate(date);
+          if (parsedDate == null) return null;
+
+          final normalizedUnit = unit?.toString().toLowerCase() ?? 'days';
+          final amountValue = _toNum(amount).toInt();
+
+          switch (normalizedUnit) {
+            case 'days':
+              return parsedDate.add(Duration(days: amountValue));
+            case 'hours':
+              return parsedDate.add(Duration(hours: amountValue));
+            case 'minutes':
+              return parsedDate.add(Duration(minutes: amountValue));
+            case 'seconds':
+              return parsedDate.add(Duration(seconds: amountValue));
+            default:
+              return parsedDate.add(Duration(days: amountValue));
+          }
+        },
+        'IS_EMPTY': (dynamic value) {
+          if (value == null) return true;
+          if (value is String) return value.isEmpty;
+          if (value is List) return value.isEmpty;
+          if (value is Map) return value.isEmpty;
+          return false;
+        },
+        'COALESCE': (dynamic value1, dynamic value2) => value1 ?? value2,
         'ABS': (dynamic x) => _toNum(x).abs(),
         'SQRT': (dynamic x) => sqrt(_toNum(x)),
         'MIN': (dynamic a, [dynamic b, dynamic c, dynamic d]) {

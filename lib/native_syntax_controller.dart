@@ -8,9 +8,9 @@
 ///
 /// ### Formula Evaluation
 /// - Evaluate mathematical and logical expressions
-/// - Support for custom functions (SUM, AVERAGE, IF, CONTAINS, LENGTH, ABS, SQRT, MIN, MAX, etc.)
+/// - Support for custom functions (SUM, AVERAGE, IF, CONTAINS, LENGTH, LEN, UPPER, LOWER, TRIM, IN, NOW, DATE_DIFF, DATE_ADD, IS_EMPTY, COALESCE, ABS, SQRT, MIN, MAX, etc.)
 /// - Enhanced Map property access (both .property and ['property'] syntax)
-/// - Array operations (ARRAY_ANY, ARRAY_ALL)
+/// - Array operations (ARRAY_ANY, ARRAY_ALL, IN)
 ///
 /// ### Syntax Highlighting
 /// - Automatic highlighting of functions, operators, numbers, and strings

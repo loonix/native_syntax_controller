@@ -1,3 +1,8 @@
+## 1.3.0
+
+* Added new built-in functions: UPPER, LOWER, TRIM, LEN, IN, NOW, DATE_DIFF, DATE_ADD, IS_EMPTY, COALESCE
+* Added direct access to additional built-in functions: upper, lower, trim, len, in_, now_, dateDiff, dateAdd, isEmpty_, coalesce
+
 ## 1.2.0
 
 * Added new built-in functions: CONTAINS, LENGTH, ABS, SQRT, MIN, MAX
@@ -12,5 +17,4 @@
 ## 1.0.0
 
 * Initial release: A high-performance syntax highlighting controller using Flutter's native text rendering (TextSpan). No overlays, no sync issues, just a pure TextEditingController extension.
-
 

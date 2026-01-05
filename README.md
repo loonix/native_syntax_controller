@@ -12,7 +12,7 @@ A high-performance syntax highlighting controller using Flutter's native text re
 
 - **Formula Evaluation**: Evaluate mathematical and logical expressions using the expressions package
 - **Enhanced Map Support**: Access Map properties using both `.property` and `['property']` syntax
-- **Custom Functions**: Support for SUM, AVERAGE, IF, ARRAY_ANY, ARRAY_ALL, CONTAINS, LENGTH, ABS, SQRT, MIN, MAX, and more
+- **Custom Functions**: Support for SUM, AVERAGE, IF, ARRAY_ANY, ARRAY_ALL, CONTAINS, LENGTH, LEN, UPPER, LOWER, TRIM, IN, NOW, DATE_DIFF, DATE_ADD, IS_EMPTY, COALESCE, ABS, SQRT, MIN, MAX, and more
 - **Syntax Highlighting**: Automatic highlighting of functions, operators, numbers, and strings
 - **Customizable Colors**: Change highlighting colors to match your app's theme
 
@@ -22,7 +22,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  native_syntax_controller: ^1.0.0
+  native_syntax_controller: ^1.3.0
 ```
 
 ## Usage
@@ -162,7 +162,7 @@ class _CustomFormulaEditorState extends State<CustomFormulaEditor> {
 
 The syntax highlighter recognizes and colors the following elements:
 
-- **Functions**: `SUM`, `AVERAGE`, `IF`, `ARRAY_ANY`, `ARRAY_ALL`, `CONTAINS`, `LENGTH`, `ABS`, `SQRT`, `MIN`, `MAX`, etc.
+- **Functions**: `SUM`, `AVERAGE`, `IF`, `ARRAY_ANY`, `ARRAY_ALL`, `CONTAINS`, `LENGTH`, `LEN`, `UPPER`, `LOWER`, `TRIM`, `IN`, `NOW`, `DATE_DIFF`, `DATE_ADD`, `IS_EMPTY`, `COALESCE`, `ABS`, `SQRT`, `MIN`, `MAX`, etc.
 - **Operators**: `+`, `-`, `*`, `/`, `=`, `>`, `<`, `!`, `&`, `|`, etc.
 - **Numbers**: `42`, `3.14`, `1.5e10`
 - **Strings**: `'hello'`, `"world"`
@@ -398,7 +398,14 @@ The package provides several built-in functions that can be used both in formula
 - `average(a, [b, c, d])`: Calculate average of values
 - `sum(a, [b, c, d, e])`: Calculate sum of values
 - `contains_(str, substr)`: Check if string contains substring
-- `length(value)`: Get length of string or array
+- `upper(text)`, `lower(text)`, `trim(text)`: String casing and trimming
+- `length(value)`, `len(value)`: Get length of string or array
+- `in_(value, array)`: Check if a value exists in a list
+- `now_()`: Current date/time
+- `dateDiff(date1, date2, unit)`: Date difference in days/hours/minutes/seconds
+- `dateAdd(date, amount, unit)`: Add time to a date
+- `isEmpty_(value)`: Check if a value is null or empty
+- `coalesce(value1, value2)`: Return the first non-null value
 - `arrayAny(array, field, value)`: Check if any array item matches
 - `arrayAll(array, field, value)`: Check if all array items match
 

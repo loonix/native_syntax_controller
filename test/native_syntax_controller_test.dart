@@ -131,6 +131,61 @@ void main() {
       expect(evaluateFormula({'num': 123}, "LENGTH(num)"), 0); // Non-string/list
     });
 
+    test('upper function', () {
+      expect(evaluateFormula({'text': 'hello world'}, "UPPER(text)"), 'HELLO WORLD');
+      expect(evaluateFormula({'text': null}, "UPPER(text)"), '');
+    });
+
+    test('lower function', () {
+      expect(evaluateFormula({'text': 'HELLO WORLD'}, "LOWER(text)"), 'hello world');
+      expect(evaluateFormula({'text': null}, "LOWER(text)"), '');
+    });
+
+    test('trim function', () {
+      expect(evaluateFormula({'text': '  hello  '}, "TRIM(text)"), 'hello');
+      expect(evaluateFormula({'text': '\n\tworld\n'}, "TRIM(text)"), 'world');
+    });
+
+    test('len function', () {
+      expect(evaluateFormula({'text': 'hello'}, "LEN(text)"), 5);
+      expect(evaluateFormula({'list': [1, 2, 3, 4]}, "LEN(list)"), 4);
+      expect(evaluateFormula({'value': null}, "LEN(value)"), 0);
+    });
+
+    test('in function', () {
+      expect(evaluateFormula({'value': 'PT', 'list': ['PT', 'ES', 'FR']}, "IN(value, list)"), true);
+      expect(evaluateFormula({'value': 5, 'list': [1, 2, 3, 4]}, "IN(value, list)"), false);
+    });
+
+    test('now function', () {
+      final result = evaluateFormula({}, "NOW()");
+      expect(result, isA<DateTime>());
+    });
+
+    test('dateDiff function', () {
+      expect(evaluateFormula({}, 'DATE_DIFF("2026-01-10", "2026-01-05", "days")'), 5);
+    });
+
+    test('dateAdd function', () {
+      final result = evaluateFormula({}, 'DATE_ADD("2026-01-05", 7, "days")') as DateTime;
+      expect(result.year, 2026);
+      expect(result.month, 1);
+      expect(result.day, 12);
+    });
+
+    test('isEmpty function', () {
+      expect(evaluateFormula({'value': ''}, "IS_EMPTY(value)"), true);
+      expect(evaluateFormula({'value': []}, "IS_EMPTY(value)"), true);
+      expect(evaluateFormula({'value': <String, dynamic>{}}, "IS_EMPTY(value)"), true);
+      expect(evaluateFormula({'value': null}, "IS_EMPTY(value)"), true);
+      expect(evaluateFormula({'value': 'text'}, "IS_EMPTY(value)"), false);
+    });
+
+    test('coalesce function', () {
+      expect(evaluateFormula({'value': null}, 'COALESCE(value, "default")'), 'default');
+      expect(evaluateFormula({'value': 'set'}, 'COALESCE(value, "default")'), 'set');
+    });
+
     test('abs function', () {
       expect(evaluateFormula({'x': -5}, "ABS(x)"), 5);
       expect(evaluateFormula({'x': 5}, "ABS(x)"), 5);
