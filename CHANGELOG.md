@@ -1,3 +1,15 @@
+## 1.4.0
+
+* **BREAKING CHANGE**: Enhanced ARRAY_ANY and ARRAY_ALL functions to support complex conditional expressions
+  - ARRAY_ANY and ARRAY_ALL now accept condition strings instead of field/value pairs
+  - Example: `ARRAY_ANY(skills, "proficiency == \"expert\"")` instead of `ARRAY_ANY(skills, "proficiency", "expert")`
+* Added new ARRAY_LENGTH function with optional condition filtering
+  - `ARRAY_LENGTH(array)` - returns the length of an array
+  - `ARRAY_LENGTH(array, "condition")` - returns count of items matching the condition
+* Improved ARRAY function error handling with graceful fallbacks
+* Added comprehensive test coverage for all ARRAY functions
+* Enhanced documentation to reflect new ARRAY function capabilities
+
 ## 1.3.0
 
 * Added new built-in functions: UPPER, LOWER, TRIM, LEN, IN, NOW, DATE_DIFF, DATE_ADD, IS_EMPTY, COALESCE

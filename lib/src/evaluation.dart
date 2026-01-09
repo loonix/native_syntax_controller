@@ -189,6 +189,7 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
         'SUM',
         'ARRAY_ANY',
         'ARRAY_ALL',
+        'ARRAY_LENGTH',
         'CONTAINS',
         'LENGTH',
         'LEN',
@@ -256,13 +257,63 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
           final values = [a, if (b != null) b, if (c != null) c, if (d != null) d, if (e != null) e].map(_toNum).toList();
           return values.fold<num>(0, (acc, v) => acc + v);
         },
-        'ARRAY_ANY': (dynamic array, String field, dynamic value) {
-          if (array is! List) return false;
-          return array.any((item) => item is Map && item[field] == value);
+        'ARRAY_LENGTH': (dynamic array, [String? condition]) {
+          if (array is! List) return 0;
+          if (condition == null) {
+            return array.length;
+          }
+          // If condition is provided, count items that match the condition
+          try {
+            int count = 0;
+            for (final item in array) {
+              if (item is Map) {
+                final itemContext = Map<String, dynamic>.from(item);
+                final conditionExpression = Expression.parse(condition);
+                const conditionEvaluator = ExpressionEvaluator();
+                final result = conditionEvaluator.eval(conditionExpression, itemContext);
+                if (result is bool && result) count++;
+              }
+            }
+            return count;
+          } catch (e) {
+            return 0; // Return 0 if condition evaluation fails
+          }
         },
-        'ARRAY_ALL': (dynamic array, String field, dynamic value) {
+        'ARRAY_ANY': (dynamic array, String condition) {
           if (array is! List) return false;
-          return array.every((item) => item is Map && item[field] == value);
+          if (array.isEmpty) return false;
+          try {
+            for (final item in array) {
+              if (item is Map) {
+                final itemContext = Map<String, dynamic>.from(item);
+                final conditionExpression = Expression.parse(condition);
+                const conditionEvaluator = ExpressionEvaluator();
+                final result = conditionEvaluator.eval(conditionExpression, itemContext);
+                if (result is bool && result) return true;
+              }
+            }
+            return false;
+          } catch (e) {
+            return false; // Return false if condition evaluation fails
+          }
+        },
+        'ARRAY_ALL': (dynamic array, String condition) {
+          if (array is! List) return false;
+          if (array.isEmpty) return false;
+          try {
+            for (final item in array) {
+              if (item is Map) {
+                final itemContext = Map<String, dynamic>.from(item);
+                final conditionExpression = Expression.parse(condition);
+                const conditionEvaluator = ExpressionEvaluator();
+                final result = conditionEvaluator.eval(conditionExpression, itemContext);
+                if (!(result is bool && result)) return false;
+              }
+            }
+            return true;
+          } catch (e) {
+            return false; // Return false if condition evaluation fails
+          }
         },
         'IF': (dynamic condition, dynamic trueVal, dynamic falseVal) => condition ? trueVal : falseVal,
         'SIN': (dynamic x) => sin(_toNum(x)),
