@@ -186,6 +186,55 @@ void main() {
       expect(evaluateFormula({'value': 'set'}, 'COALESCE(value, "default")'), 'set');
     });
 
+    test('coalesce function with multiple arguments', () {
+      expect(evaluateFormula({'a': null, 'b': null, 'c': 'third'}, 'COALESCE(a, b, c)'), 'third');
+      expect(evaluateFormula({'a': null, 'b': 'second'}, 'COALESCE(a, b, "third")'), 'second');
+      expect(evaluateFormula({'a': 'first'}, 'COALESCE(a, "second", "third")'), 'first');
+    });
+
+    test('round function', () {
+      expect(evaluateFormula({}, 'ROUND(3.7)'), 4);
+      expect(evaluateFormula({}, 'ROUND(3.2)'), 3);
+      expect(evaluateFormula({}, 'ROUND(3.5)'), 4);
+      expect(evaluateFormula({}, 'ROUND(-3.7)'), -4);
+      expect(evaluateFormula({}, 'ROUND(-3.2)'), -3);
+    });
+
+    test('round function with decimals', () {
+      expect(evaluateFormula({}, 'ROUND(3.14159, 2)'), 3.14);
+      expect(evaluateFormula({}, 'ROUND(3.145, 2)'), 3.15);
+      expect(evaluateFormula({}, 'ROUND(3.14159, 4)'), 3.1416);
+      expect(evaluateFormula({'price': 10.5}, 'ROUND(price * 1.1)'), 12);
+    });
+
+    test('ceil function', () {
+      expect(evaluateFormula({}, 'CEIL(3.1)'), 4);
+      expect(evaluateFormula({}, 'CEIL(3.9)'), 4);
+      expect(evaluateFormula({}, 'CEIL(3.0)'), 3);
+      expect(evaluateFormula({}, 'CEIL(-3.1)'), -3);
+      expect(evaluateFormula({'x': 2.3}, 'CEIL(x)'), 3);
+    });
+
+    test('floor function', () {
+      expect(evaluateFormula({}, 'FLOOR(3.9)'), 3);
+      expect(evaluateFormula({}, 'FLOOR(3.1)'), 3);
+      expect(evaluateFormula({}, 'FLOOR(3.0)'), 3);
+      expect(evaluateFormula({}, 'FLOOR(-3.1)'), -4);
+      expect(evaluateFormula({'x': 5.7}, 'FLOOR(x)'), 5);
+    });
+
+    test('concat function', () {
+      expect(evaluateFormula({}, 'CONCAT("Hello", " ", "World")'), 'Hello World');
+      expect(evaluateFormula({}, 'CONCAT("Value: ", 42)'), 'Value: 42');
+      expect(evaluateFormula({'score': 100}, 'CONCAT("Score: ", score, " points")'), 'Score: 100 points');
+      expect(evaluateFormula({}, 'CONCAT("a", "b", "c", "d", "e")'), 'abcde');
+      expect(evaluateFormula({'name': 'John', 'age': 30}, 'CONCAT(name, " is ", age, " years old")'), 'John is 30 years old');
+    });
+
+    test('concat function with null values', () {
+      expect(evaluateFormula({'a': 'Hello', 'b': null}, 'CONCAT(a, b, " World")'), 'Hello World');
+    });
+
     test('abs function', () {
       expect(evaluateFormula({'x': -5}, "ABS(x)"), 5);
       expect(evaluateFormula({'x': 5}, "ABS(x)"), 5);
@@ -338,22 +387,22 @@ void main() {
       {'formula': "defects[0].status == 'Pass'", 'json': '{"defects": [{"status": "Pass", "severity": "High"}, {"status": "Fail", "severity": "Low"}]}', 'expected': true},
       {'formula': "defects[1].status == 'Fail'", 'json': '{"defects": [{"status": "Pass", "severity": "High"}, {"status": "Fail", "severity": "Low"}]}', 'expected': true},
       {'formula': "inspection.passed && defects[0].severity == 'High'", 'json': '{"inspection": {"passed": true}, "defects": [{"status": "Pass", "severity": "High"}]}', 'expected': true},
-      {'formula': "ARRAY_ANY(defects, 'status', 'Fail')", 'json': '{"defects": [{"status": "Pass", "severity": "High"}, {"status": "Fail", "severity": "Low"}]}', 'expected': true},
-      {'formula': "ARRAY_ALL(defects, 'status', 'Pass')", 'json': '{"defects": [{"status": "Pass", "severity": "High"}, {"status": "Pass", "severity": "Low"}]}', 'expected': true},
+      {'formula': 'ARRAY_ANY(defects, "status == \'Fail\'")', 'json': '{"defects": [{"status": "Pass", "severity": "High"}, {"status": "Fail", "severity": "Low"}]}', 'expected': true},
+      {'formula': 'ARRAY_ALL(defects, "status == \'Pass\'")', 'json': '{"defects": [{"status": "Pass", "severity": "High"}, {"status": "Pass", "severity": "Low"}]}', 'expected': true},
       {
-        'formula': "IF(ARRAY_ANY(defects, 'status', 'Fail'), IF(ARRAY_ANY(defects, 'severity', 'High'), 'Critical Failure', 'Minor Failure'), 'All Passed')",
+        'formula': 'IF(ARRAY_ANY(defects, "status == \'Fail\'"), IF(ARRAY_ANY(defects, "severity == \'High\'"), \'Critical Failure\', \'Minor Failure\'), \'All Passed\')',
         'json': '{"defects": [{"status": "Pass", "severity": "High"}, {"status": "Fail", "severity": "High"}]}',
         'expected': 'Critical Failure',
       },
       {
         'formula':
-            "IF(vehicle_age > 10 && !ARRAY_ANY(defects, 'status', 'Fail'), IF(mileage < 50000, 'Excellent Condition', 'Good Condition'), IF(ARRAY_ALL(defects, 'severity', 'Low'), 'Needs Minor Repair', 'Needs Major Repair'))",
+            'IF(vehicle_age > 10 && !ARRAY_ANY(defects, "status == \'Fail\'"), IF(mileage < 50000, \'Excellent Condition\', \'Good Condition\'), IF(ARRAY_ALL(defects, "severity == \'Low\'"), \'Needs Minor Repair\', \'Needs Major Repair\'))',
         'json': '{"vehicle_age": 12, "mileage": 30000, "defects": [{"status": "Pass", "severity": "Low"}]}',
         'expected': 'Excellent Condition',
       },
       {
         'formula':
-            "IF(user_role == 'inspector' && inspection_date != null, IF(ARRAY_ANY(defects, 'status', 'Fail'), IF(ARRAY_ANY(defects, 'severity', 'Critical'), 'Reject Vehicle', IF(vehicle_age > 15, 'Conditional Approval', 'Approve with Repairs')), IF(mileage > 100000, 'Schedule Maintenance', 'Full Approval')), 'Access Denied')",
+            'IF(user_role == \'inspector\' && inspection_date != null, IF(ARRAY_ANY(defects, "status == \'Fail\'"), IF(ARRAY_ANY(defects, "severity == \'Critical\'"), \'Reject Vehicle\', IF(vehicle_age > 15, \'Conditional Approval\', \'Approve with Repairs\')), IF(mileage > 100000, \'Schedule Maintenance\', \'Full Approval\')), \'Access Denied\')',
         'json': '{"user_role": "inspector", "inspection_date": "2025-12-11", "vehicle_age": 8, "mileage": 60000, "defects": [{"status": "Pass", "severity": "Low"}]}',
         'expected': 'Full Approval',
       },

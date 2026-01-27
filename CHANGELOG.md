@@ -1,3 +1,14 @@
+## 1.5.0
+
+* Added new math functions:
+  - `ROUND(number, [decimals])` - Rounds to nearest integer, or to specified decimal places
+  - `CEIL(number)` - Rounds up to nearest integer
+  - `FLOOR(number)` - Rounds down to nearest integer
+* Added new text function:
+  - `CONCAT(val1, val2, ...)` - Joins up to 8 values as text (auto-converts numbers to strings)
+* Enhanced `COALESCE` to support up to 4 arguments (was 2)
+* Added comprehensive test coverage for all new functions
+
 ## 1.4.0
 
 * **BREAKING CHANGE**: Enhanced ARRAY_ANY and ARRAY_ALL functions to support complex conditional expressions
