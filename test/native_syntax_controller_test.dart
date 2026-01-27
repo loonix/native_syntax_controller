@@ -186,25 +186,26 @@ void main() {
       expect(evaluateFormula({'value': 'set'}, 'COALESCE(value, "default")'), 'set');
     });
 
-    test('coalesce function with multiple arguments', () {
-      expect(evaluateFormula({'a': null, 'b': null, 'c': 'third'}, 'COALESCE(a, b, c)'), 'third');
-      expect(evaluateFormula({'a': null, 'b': 'second'}, 'COALESCE(a, b, "third")'), 'second');
-      expect(evaluateFormula({'a': 'first'}, 'COALESCE(a, "second", "third")'), 'first');
+    test('coalesce function chained', () {
+      // COALESCE only takes 2 arguments - chain them for more
+      expect(evaluateFormula({'a': null, 'b': null, 'c': 'third'}, 'COALESCE(COALESCE(a, b), c)'), 'third');
+      expect(evaluateFormula({'a': null, 'b': 'second'}, 'COALESCE(a, b)'), 'second');
+      expect(evaluateFormula({'a': 'first'}, 'COALESCE(a, "second")'), 'first');
     });
 
     test('round function', () {
-      expect(evaluateFormula({}, 'ROUND(3.7)'), 4);
-      expect(evaluateFormula({}, 'ROUND(3.2)'), 3);
-      expect(evaluateFormula({}, 'ROUND(3.5)'), 4);
-      expect(evaluateFormula({}, 'ROUND(-3.7)'), -4);
-      expect(evaluateFormula({}, 'ROUND(-3.2)'), -3);
+      expect(evaluateFormula({}, 'ROUND(3.7, null)'), 4);
+      expect(evaluateFormula({}, 'ROUND(3.2, null)'), 3);
+      expect(evaluateFormula({}, 'ROUND(3.5, 0)'), 4);
+      expect(evaluateFormula({}, 'ROUND(-3.7, 0)'), -4);
+      expect(evaluateFormula({}, 'ROUND(-3.2, 0)'), -3);
     });
 
     test('round function with decimals', () {
       expect(evaluateFormula({}, 'ROUND(3.14159, 2)'), 3.14);
       expect(evaluateFormula({}, 'ROUND(3.145, 2)'), 3.15);
       expect(evaluateFormula({}, 'ROUND(3.14159, 4)'), 3.1416);
-      expect(evaluateFormula({'price': 10.5}, 'ROUND(price * 1.1)'), 12);
+      expect(evaluateFormula({'price': 10.5}, 'ROUND(price * 1.1, 0)'), 12);
     });
 
     test('ceil function', () {

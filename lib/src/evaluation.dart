@@ -394,22 +394,18 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
           if (value is Map) return value.isEmpty;
           return false;
         },
-        'COALESCE': (dynamic value1, [dynamic value2, dynamic value3, dynamic value4]) {
-          if (value1 != null) return value1;
-          if (value2 != null) return value2;
-          if (value3 != null) return value3;
-          return value4;
-        },
-        'ROUND': (dynamic x, [dynamic decimals]) {
+        'COALESCE': (dynamic value1, dynamic value2) => value1 ?? value2,
+        'ROUND': (dynamic x, dynamic decimals) {
           final num value = _toNum(x);
-          final int dec = decimals != null ? _toNum(decimals).toInt() : 0;
+          if (decimals == null) return value.round();
+          final int dec = _toNum(decimals).toInt();
           if (dec == 0) return value.round();
           final multiplier = pow(10, dec);
           return (value * multiplier).round() / multiplier;
         },
         'CEIL': (dynamic x) => _toNum(x).ceil(),
         'FLOOR': (dynamic x) => _toNum(x).floor(),
-        'CONCAT': (dynamic a, [dynamic b, dynamic c, dynamic d, dynamic e, dynamic f, dynamic g, dynamic h]) {
+        'CONCAT': (dynamic a, dynamic b, [dynamic c, dynamic d, dynamic e, dynamic f, dynamic g, dynamic h]) {
           return [a, b, c, d, e, f, g, h]
               .where((v) => v != null)
               .map((v) => v.toString())

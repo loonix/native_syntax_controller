@@ -1,3 +1,10 @@
+## 1.5.1
+
+* Fixed TypeError on Flutter Web with optional function parameters
+* `ROUND(number, decimals)` - decimals parameter is now required (pass `null` or `0` for integer rounding)
+* `COALESCE(value1, value2)` - reverted to 2 arguments (chain calls for more: `COALESCE(COALESCE(a, b), c)`)
+* `CONCAT(a, b, ...)` - first two arguments are now required
+
 ## 1.5.0
 
 * Added new math functions:
