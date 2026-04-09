@@ -1,3 +1,12 @@
+## 1.5.2
+
+* **BUGFIX**: Removed buggy pre-validation check that incorrectly flagged string literals in quotes as undefined variables
+  - Formulas like `IF(age >= 18, "Adult", "Minor")` no longer throw false "Undefined function or variable" errors
+  - The actual evaluation phase correctly handles all error cases
+  - Improves reliability when using string literals in conditional formulas
+* Cleaned up dead code from disabled validation logic
+* Enhanced error handling to rely on the robust evaluation phase
+
 ## 1.5.1
 
 * Fixed TypeError on Flutter Web with optional function parameters

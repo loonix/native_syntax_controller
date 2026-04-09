@@ -153,80 +153,9 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
       }
     }
 
-    // Proactively scan for undefined functions/variables before evaluation
-    // This catches issues even when parsing fails due to other syntax errors
-    if (!allErrors.any((e) => e['message'].toString().contains('Undefined function or variable'))) {
-      // Extract all potential identifiers from the formula
-      final identifierRegex = RegExp(r'\b([a-zA-Z_][a-zA-Z0-9_]*)\b');
-      final allMatches = identifierRegex.allMatches(processedFormula);
-
-      // Filter out identifiers that appear to be inside quotes
-      final allIdentifiers = <String>{};
-      for (final match in allMatches) {
-        final identifier = match.group(1)!;
-        final start = match.start;
-
-        // Check if this identifier is inside single or double quotes
-        bool insideQuotes = false;
-        for (int i = 0; i < start; i++) {
-          if ((processedFormula[i] == "'" || processedFormula[i] == '"') && (i == 0 || processedFormula[i - 1] != '\\')) {
-            insideQuotes = !insideQuotes;
-          }
-        }
-
-        if (!insideQuotes) {
-          allIdentifiers.add(identifier);
-        }
-      }
-
-      // Remove known functions and keywords
-      final knownFunctions = {
-        'IF',
-        'SIN',
-        'COS',
-        'PI',
-        'AVERAGE',
-        'SUM',
-        'ARRAY_ANY',
-        'ARRAY_ALL',
-        'ARRAY_LENGTH',
-        'CONTAINS',
-        'LENGTH',
-        'LEN',
-        'ABS',
-        'SQRT',
-        'MIN',
-        'MAX',
-        'UPPER',
-        'LOWER',
-        'TRIM',
-        'IN',
-        'NOW',
-        'DATE_DIFF',
-        'DATE_ADD',
-        'IS_EMPTY',
-        'COALESCE',
-        'ROUND',
-        'CEIL',
-        'FLOOR',
-        'CONCAT',
-        'true',
-        'false',
-        'null',
-        ...?customFunctions?.keys,
-      };
-
-      final potentialUndefined = allIdentifiers.where((id) => !knownFunctions.contains(id)).toList();
-
-      // Check each potential undefined identifier
-      for (final identifier in potentialUndefined) {
-        // Skip if it's already in the provided json context
-        if (!json.containsKey(identifier)) {
-          final position = processedFormula.indexOf(identifier);
-          allErrors.add({'message': "Undefined function or variable '$identifier'", 'position': position >= 0 ? position : null, 'type': 'evaluation'});
-        }
-      }
-    }
+    // NOTE: Pre-validation of undefined functions/variables was removed in v1.5.2
+    // It had bugs with string literals in quotes (e.g., "Adult", "Minor")
+    // The actual evaluation phase catches real errors, so pre-validation is unnecessary
 
     // If parsing succeeded and we have no parse errors, try evaluation
     if (expression != null && !allErrors.any((e) => e['type'] == 'parse')) {
@@ -448,8 +377,7 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
         const evaluator = ExpressionEvaluator();
         return evaluator.eval(expression, context);
       } catch (evalError) {
-        // If evaluation fails and we haven't already caught undefined variables,
-        // try to provide more specific error information
+        // If evaluation fails, provide specific error information
         if (!allErrors.any((e) => e['message'].toString().contains('Undefined function or variable'))) {
           String errorMessage = 'Evaluation error';
           int? errorPosition;
@@ -466,7 +394,6 @@ dynamic evaluateFormula(Map<String, dynamic> json, String formula, {Map<String, 
 
           allErrors.add({'message': errorMessage, 'position': errorPosition, 'type': 'evaluation'});
         }
-        // If we already have undefined variable errors, don't add additional generic errors
       }
     }
 
